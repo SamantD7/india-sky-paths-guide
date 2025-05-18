@@ -78,7 +78,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
         });
         
         // Adjust the viewport to fit the route
-        map.fitBounds(bounds, { padding: 50 });
+        map.fitBounds(bounds);
         
         // If only one point or very close points, set a reasonable zoom level
         if (map.getZoom() && map.getZoom()! > 10) {

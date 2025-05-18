@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Airport } from "@/types/aviation";
 import { useEffect, useState } from "react";
+import { getAirports } from "@/api/aviation";
 
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
@@ -32,19 +33,8 @@ const AirportSelector = ({
     // Fetch airports from our API
     const fetchAirports = async () => {
       try {
-        // For now, we'll use dummy data until our API is ready
-        const dummyAirports = [
-          { code: "DEL", name: "Indira Gandhi International Airport", city: "New Delhi", position: { lat: 28.5561, lng: 77.1000 } },
-          { code: "BOM", name: "Chhatrapati Shivaji International Airport", city: "Mumbai", position: { lat: 19.0896, lng: 72.8656 } },
-          { code: "MAA", name: "Chennai International Airport", city: "Chennai", position: { lat: 12.9941, lng: 80.1709 } },
-          { code: "BLR", name: "Kempegowda International Airport", city: "Bangalore", position: { lat: 13.1986, lng: 77.7066 } },
-          { code: "CCU", name: "Netaji Subhas Chandra Bose International Airport", city: "Kolkata", position: { lat: 22.6520, lng: 88.4463 } },
-          { code: "HYD", name: "Rajiv Gandhi International Airport", city: "Hyderabad", position: { lat: 17.2403, lng: 78.4294 } },
-          { code: "GOI", name: "Dabolim Airport", city: "Goa", position: { lat: 15.3808, lng: 73.8314 } },
-          { code: "JAI", name: "Jaipur International Airport", city: "Jaipur", position: { lat: 26.8242, lng: 75.8122 } },
-          { code: "COK", name: "Cochin International Airport", city: "Kochi", position: { lat: 10.1520, lng: 76.3920 } },
-        ];
-        setAirports(dummyAirports);
+        const airportsData = getAirports();
+        setAirports(airportsData);
       } catch (error) {
         console.error("Failed to fetch airports:", error);
       } finally {
@@ -78,7 +68,7 @@ const AirportSelector = ({
               <SelectContent>
                 {airports.map((airport) => (
                   <SelectItem key={airport.code} value={airport.code}>
-                    {airport.city} ({airport.code})
+                    {airport.city} - {airport.code}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -103,7 +93,7 @@ const AirportSelector = ({
               <SelectContent>
                 {airports.map((airport) => (
                   <SelectItem key={airport.code} value={airport.code}>
-                    {airport.city} ({airport.code})
+                    {airport.city} - {airport.code}
                   </SelectItem>
                 ))}
               </SelectContent>

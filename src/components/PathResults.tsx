@@ -8,11 +8,25 @@ interface PathResultsProps {
   route: Route;
 }
 
+const getAlgorithmDisplayName = (algorithm: string): string => {
+  switch (algorithm) {
+    case 'astar':
+      return 'A* Search Algorithm';
+    case 'floyd-warshall':
+      return 'Floyd-Warshall Algorithm';
+    case 'dijkstra':
+    default:
+      return 'Dijkstra Algorithm';
+  }
+};
+
 const PathResults = ({ route }: PathResultsProps) => {
+  const algorithmName = getAlgorithmDisplayName(route.algorithm);
+  
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <Badge variant="outline">Dijkstra Algorithm</Badge>
+        <Badge variant="outline">{algorithmName}</Badge>
         <span className="text-xs text-muted-foreground">
           {route.path.length - 1} stops
         </span>

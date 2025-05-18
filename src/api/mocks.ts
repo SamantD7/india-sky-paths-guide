@@ -29,7 +29,7 @@ window.fetch = async function(input: RequestInfo | URL, init?: RequestInit) {
   }
   
   // For all other requests, use the original fetch
-  return originalFetch.apply(window, [input, init]);
+  return originalFetch(input, init);
 };
 
 export function setupMockAPI() {

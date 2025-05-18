@@ -4,6 +4,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Airport } from "@/types/aviation";
 import { useEffect, useState } from "react";
 import { getAirports } from "@/api/aviation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Info } from "lucide-react";
 
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
@@ -15,6 +17,12 @@ interface AirportSelectorProps {
   onCalculate: () => void;
   isLoading: boolean;
 }
+
+const algorithmExplanations: Record<string, string> = {
+  dijkstra: "Finds the shortest path from a starting node to all other nodes in a weighted graph.",
+  astar: "An informed search algorithm that uses heuristics to find the shortest path faster.",
+  "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph."
+};
 
 const AirportSelector = ({
   sourceAirport,
@@ -117,6 +125,15 @@ const AirportSelector = ({
                 <SelectItem value="floyd-warshall">Floyd-Warshall</SelectItem>
               </SelectContent>
             </Select>
+            
+            {algorithm && (
+              <Card className="mt-2 bg-slate-50">
+                <CardContent className="p-3 text-xs flex items-start gap-2">
+                  <Info className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <p>{algorithmExplanations[algorithm]}</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

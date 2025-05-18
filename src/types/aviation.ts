@@ -14,6 +14,7 @@ export interface Route {
   path: string[];
   distance: number;
   duration: number;
+  computationTime?: number; // Add computation time in milliseconds
 }
 
 export interface FlightData {

@@ -94,8 +94,11 @@ export async function calculatePath(source: string, destination: string, algorit
   let path: string[] = [];
   let distance = 0;
   let duration = 0;
+  let computationTime = 0;
 
   // Implement different algorithms based on selection
+  const startTime = performance.now();
+  
   switch (algorithm) {
     case "astar":
       ({ path, distance, duration } = aStarSearch(graph, source, destination));
@@ -108,6 +111,9 @@ export async function calculatePath(source: string, destination: string, algorit
       ({ path, distance, duration } = dijkstra(graph, source, destination));
       break;
   }
+  
+  const endTime = performance.now();
+  computationTime = parseFloat((endTime - startTime).toFixed(2));
 
   // Check if path was found
   if (path.length === 0 || path[0] !== source || path[path.length - 1] !== destination) {
@@ -119,7 +125,8 @@ export async function calculatePath(source: string, destination: string, algorit
     algorithm: algorithm,
     path,
     distance,
-    duration
+    duration,
+    computationTime
   };
   
   // Simulate API delay

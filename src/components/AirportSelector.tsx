@@ -6,6 +6,12 @@ import { useEffect, useState } from "react";
 import { getAirports } from "@/api/aviation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Info } from "lucide-react";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
@@ -36,6 +42,8 @@ const AirportSelector = ({
 }: AirportSelectorProps) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [isLoadingAirports, setIsLoadingAirports] = useState(true);
+  const [showSourceInfo, setShowSourceInfo] = useState(false);
+  const [showDestInfo, setShowDestInfo] = useState(false);
 
   useEffect(() => {
     // Fetch airports from our API
@@ -53,6 +61,18 @@ const AirportSelector = ({
     fetchAirports();
   }, []);
 
+  const renderAirportTooltip = (airport: Airport | null) => {
+    if (!airport) return null;
+    
+    return (
+      <div className="flex flex-col gap-1">
+        <div className="font-medium">{airport.name}</div>
+        <div className="text-sm">City: {airport.city} | State: {airport.state}</div>
+        <div className="text-sm font-semibold">IATA: {airport.code}</div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -62,50 +82,78 @@ const AirportSelector = ({
             <label htmlFor="source" className="text-sm font-medium">
               Source Airport
             </label>
-            <Select
-              disabled={isLoadingAirports}
-              value={sourceAirport?.code}
-              onValueChange={(value) => {
-                const airport = airports.find((a) => a.code === value) || null;
-                onSourceChange(airport);
-              }}
-            >
-              <SelectTrigger id="source">
-                <SelectValue placeholder="Select source airport" />
-              </SelectTrigger>
-              <SelectContent>
-                {airports.map((airport) => (
-                  <SelectItem key={airport.code} value={airport.code}>
-                    {airport.city} - {airport.code}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <TooltipProvider>
+              <Tooltip open={showSourceInfo} onOpenChange={setShowSourceInfo}>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Select
+                      disabled={isLoadingAirports}
+                      value={sourceAirport?.code}
+                      onValueChange={(value) => {
+                        const airport = airports.find((a) => a.code === value) || null;
+                        onSourceChange(airport);
+                        if (airport) setShowSourceInfo(true);
+                      }}
+                    >
+                      <SelectTrigger id="source">
+                        <SelectValue placeholder="Select source airport" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {airports.map((airport) => (
+                          <SelectItem key={airport.code} value={airport.code}>
+                            {airport.city} - {airport.code}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TooltipTrigger>
+                {sourceAirport && (
+                  <TooltipContent side="right" className="p-3 bg-white shadow-lg border border-gray-200 rounded-md">
+                    {renderAirportTooltip(sourceAirport)}
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="destination" className="text-sm font-medium">
               Destination Airport
             </label>
-            <Select
-              disabled={isLoadingAirports}
-              value={destinationAirport?.code}
-              onValueChange={(value) => {
-                const airport = airports.find((a) => a.code === value) || null;
-                onDestinationChange(airport);
-              }}
-            >
-              <SelectTrigger id="destination">
-                <SelectValue placeholder="Select destination airport" />
-              </SelectTrigger>
-              <SelectContent>
-                {airports.map((airport) => (
-                  <SelectItem key={airport.code} value={airport.code}>
-                    {airport.city} - {airport.code}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <TooltipProvider>
+              <Tooltip open={showDestInfo} onOpenChange={setShowDestInfo}>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Select
+                      disabled={isLoadingAirports}
+                      value={destinationAirport?.code}
+                      onValueChange={(value) => {
+                        const airport = airports.find((a) => a.code === value) || null;
+                        onDestinationChange(airport);
+                        if (airport) setShowDestInfo(true);
+                      }}
+                    >
+                      <SelectTrigger id="destination">
+                        <SelectValue placeholder="Select destination airport" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {airports.map((airport) => (
+                          <SelectItem key={airport.code} value={airport.code}>
+                            {airport.city} - {airport.code}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TooltipTrigger>
+                {destinationAirport && (
+                  <TooltipContent side="right" className="p-3 bg-white shadow-lg border border-gray-200 rounded-md">
+                    {renderAirportTooltip(destinationAirport)}
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="space-y-2">

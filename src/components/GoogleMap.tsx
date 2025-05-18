@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, Polyline, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { Airport, Route } from "@/types/aviation";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -23,6 +23,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
   const apiKey = localStorage.getItem('map_api_key') || '';
   const [mapReady, setMapReady] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
   
   // Load the Google Maps API
   const { isLoaded, loadError } = useJsApiLoader({
@@ -45,19 +46,24 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
 
   // Define a list of dummy airports in case we need them for path rendering
   const dummyAirports = [
-    { code: "DEL", name: "Indira Gandhi International Airport", city: "New Delhi", position: { lat: 28.5561, lng: 77.1000 } },
-    { code: "BOM", name: "Chhatrapati Shivaji International Airport", city: "Mumbai", position: { lat: 19.0896, lng: 72.8656 } },
-    { code: "MAA", name: "Chennai International Airport", city: "Chennai", position: { lat: 12.9941, lng: 80.1709 } },
-    { code: "BLR", name: "Kempegowda International Airport", city: "Bangalore", position: { lat: 13.1986, lng: 77.7066 } },
-    { code: "CCU", name: "Netaji Subhas Chandra Bose International Airport", city: "Kolkata", position: { lat: 22.6520, lng: 88.4463 } },
-    { code: "HYD", name: "Rajiv Gandhi International Airport", city: "Hyderabad", position: { lat: 17.2403, lng: 78.4294 } },
-    { code: "GOI", name: "Dabolim Airport", city: "Goa", position: { lat: 15.3808, lng: 73.8314 } },
-    { code: "JAI", name: "Jaipur International Airport", city: "Jaipur", position: { lat: 26.8242, lng: 75.8122 } },
-    { code: "COK", name: "Cochin International Airport", city: "Kochi", position: { lat: 10.1520, lng: 76.3920 } },
-    { code: "AMD", name: "Sardar Vallabhbhai Patel International Airport", city: "Ahmedabad", position: { lat: 23.0722, lng: 72.6193 } },
-    { code: "IXC", name: "Chandigarh International Airport", city: "Chandigarh", position: { lat: 30.6735, lng: 76.7885 } },
-    { code: "PNQ", name: "Pune Airport", city: "Pune", position: { lat: 18.5793, lng: 73.9089 } },
+    { code: "DEL", name: "Indira Gandhi International Airport", city: "New Delhi", state: "Delhi", position: { lat: 28.5561, lng: 77.1000 } },
+    { code: "BOM", name: "Chhatrapati Shivaji International Airport", city: "Mumbai", state: "Maharashtra", position: { lat: 19.0896, lng: 72.8656 } },
+    { code: "MAA", name: "Chennai International Airport", city: "Chennai", state: "Tamil Nadu", position: { lat: 12.9941, lng: 80.1709 } },
+    { code: "BLR", name: "Kempegowda International Airport", city: "Bangalore", state: "Karnataka", position: { lat: 13.1986, lng: 77.7066 } },
+    { code: "CCU", name: "Netaji Subhas Chandra Bose International Airport", city: "Kolkata", state: "West Bengal", position: { lat: 22.6520, lng: 88.4463 } },
+    { code: "HYD", name: "Rajiv Gandhi International Airport", city: "Hyderabad", state: "Telangana", position: { lat: 17.2403, lng: 78.4294 } },
+    { code: "GOI", name: "Dabolim Airport", city: "Goa", state: "Goa", position: { lat: 15.3808, lng: 73.8314 } },
+    { code: "JAI", name: "Jaipur International Airport", city: "Jaipur", state: "Rajasthan", position: { lat: 26.8242, lng: 75.8122 } },
+    { code: "COK", name: "Cochin International Airport", city: "Kochi", state: "Kerala", position: { lat: 10.1520, lng: 76.3920 } },
+    { code: "AMD", name: "Sardar Vallabhbhai Patel International Airport", city: "Ahmedabad", state: "Gujarat", position: { lat: 23.0722, lng: 72.6193 } },
+    { code: "IXC", name: "Chandigarh International Airport", city: "Chandigarh", state: "Chandigarh", position: { lat: 30.6735, lng: 76.7885 } },
+    { code: "PNQ", name: "Pune Airport", city: "Pune", state: "Maharashtra", position: { lat: 18.5793, lng: 73.9089 } },
   ];
+
+  // Handle marker click to show info window
+  const handleMarkerClick = (airport: Airport) => {
+    setSelectedAirport(airport);
+  };
 
   // Callback for when the map loads
   const onMapLoad = useCallback((map: google.maps.Map) => {
@@ -106,6 +112,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
       center={INDIA_CENTER}
       zoom={DEFAULT_ZOOM}
       onLoad={onMapLoad}
+      onClick={() => setSelectedAirport(null)}
     >
       {sourceAirport && (
         <Marker 
@@ -123,6 +130,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
             strokeWeight: 1,
             scale: 0.5,
           }}
+          onClick={() => handleMarkerClick(sourceAirport)}
         />
       )}
       
@@ -142,6 +150,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
             strokeWeight: 1,
             scale: 0.5,
           }}
+          onClick={() => handleMarkerClick(destinationAirport)}
         />
       )}
       
@@ -179,9 +188,29 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
               strokeWeight: 1,
               scale: 0.4,
             }}
+            onClick={() => handleMarkerClick(airport)}
           />
         );
       })}
+
+      {/* InfoWindow for selected airport */}
+      {selectedAirport && (
+        <InfoWindow
+          position={selectedAirport.position}
+          onCloseClick={() => setSelectedAirport(null)}
+          options={{
+            pixelOffset: new window.google.maps.Size(0, -30),
+          }}
+        >
+          <div className="p-2 min-w-[200px]">
+            <h3 className="font-medium text-base">{selectedAirport.name}</h3>
+            <p className="text-sm mt-1">
+              City: {selectedAirport.city} | State: {selectedAirport.state}
+            </p>
+            <p className="text-sm font-semibold mt-1">IATA: {selectedAirport.code}</p>
+          </div>
+        </InfoWindow>
+      )}
     </GoogleMap>
   );
 };

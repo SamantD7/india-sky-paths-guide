@@ -10,10 +10,10 @@ window.fetch = async function(input: RequestInfo | URL, init?: RequestInit) {
   if (typeof input === "string" && input === "/api/calculate-path" && init?.method === "POST") {
     try {
       const body = JSON.parse(init.body as string);
-      const { source, destination } = body;
+      const { source, destination, algorithm } = body;
       
       // Call our mock backend function
-      const route = await mockBackendRequest(source, destination);
+      const route = await mockBackendRequest(source, destination, algorithm);
       
       // Return a mock Response object
       return new Response(JSON.stringify(route), {

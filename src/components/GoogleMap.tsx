@@ -24,6 +24,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
   const [mapReady, setMapReady] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
+  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
   
   // Load the Google Maps API
   const { isLoaded, loadError } = useJsApiLoader({
@@ -64,6 +65,24 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
   const onMapLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
     setMapReady(true);
+  }, []);
+
+  // Handle marker click with smooth animation
+  const handleMarkerClick = useCallback((airport: Airport) => {
+    setSelectedAirport(airport);
+    // Use a small timeout to create a smoother transition
+    setTimeout(() => {
+      setInfoWindowVisible(true);
+    }, 10);
+  }, []);
+
+  // Handle info window close with smooth transition
+  const handleInfoWindowClose = useCallback(() => {
+    setInfoWindowVisible(false);
+    // Remove the airport reference after animation completes
+    setTimeout(() => {
+      setSelectedAirport(null);
+    }, 200);
   }, []);
 
   // Center and zoom map to show the route whenever the route changes
@@ -107,6 +126,18 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
       center={INDIA_CENTER}
       zoom={DEFAULT_ZOOM}
       onLoad={onMapLoad}
+      options={{
+        disableDefaultUI: false,
+        zoomControl: true,
+        fullscreenControl: false,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }],
+          },
+        ],
+      }}
     >
       {sourceAirport && (
         <Marker 
@@ -124,7 +155,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
             strokeWeight: 1,
             scale: 0.5,
           }}
-          onClick={() => setSelectedAirport(sourceAirport)}
+          onClick={() => handleMarkerClick(sourceAirport)}
         />
       )}
       
@@ -144,7 +175,7 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
             strokeWeight: 1,
             scale: 0.5,
           }}
-          onClick={() => setSelectedAirport(destinationAirport)}
+          onClick={() => handleMarkerClick(destinationAirport)}
         />
       )}
       
@@ -182,19 +213,22 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
               strokeWeight: 1,
               scale: 0.4,
             }}
-            onClick={() => setSelectedAirport(airport)}
+            onClick={() => handleMarkerClick(airport)}
           />
         );
       })}
 
-      {/* InfoWindow for selected airport */}
-      {selectedAirport && (
+      {/* InfoWindow with smooth animation for selected airport */}
+      {selectedAirport && infoWindowVisible && (
         <InfoWindow
           position={selectedAirport.position}
-          onCloseClick={() => setSelectedAirport(null)}
-          options={{ pixelOffset: new google.maps.Size(0, -30) }}
+          onCloseClick={handleInfoWindowClose}
+          options={{ 
+            pixelOffset: new google.maps.Size(0, -30),
+            disableAutoPan: false,
+          }}
         >
-          <div className="p-2 max-w-[200px]">
+          <div className="p-2 max-w-[200px] animate-in fade-in duration-300">
             <h3 className="font-medium text-sm">{selectedAirport.name}</h3>
             <p className="text-xs text-gray-600 mt-1">
               {selectedAirport.city}

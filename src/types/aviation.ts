@@ -3,7 +3,6 @@ export interface Airport {
   code: string;
   name: string;
   city: string;
-  state?: string; // Adding optional state field
   position: {
     lat: number;
     lng: number;

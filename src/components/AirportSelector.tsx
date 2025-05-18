@@ -6,13 +6,6 @@ import { useEffect, useState } from "react";
 import { getAirports } from "@/api/aviation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Info } from "lucide-react";
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from "@/components/ui/tooltip";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
@@ -60,24 +53,6 @@ const AirportSelector = ({
     fetchAirports();
   }, []);
 
-  // Custom component to render airport options with tooltips
-  const AirportOption = ({ airport }: { airport: Airport }) => (
-    <HoverCard>
-      <HoverCardTrigger asChild>
-        <SelectItem key={airport.code} value={airport.code} className="cursor-pointer">
-          {airport.city} - {airport.code}
-        </SelectItem>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-60 p-2">
-        <div className="space-y-1">
-          <h4 className="text-sm font-semibold">{airport.name}</h4>
-          <p className="text-xs text-muted-foreground">{airport.city}{airport.state ? `, ${airport.state}` : ''}</p>
-          <p className="text-xs font-medium">Code: {airport.code}</p>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
-  );
-
   return (
     <div className="space-y-6">
       <div>
@@ -99,11 +74,11 @@ const AirportSelector = ({
                 <SelectValue placeholder="Select source airport" />
               </SelectTrigger>
               <SelectContent>
-                <TooltipProvider>
-                  {airports.map((airport) => (
-                    <AirportOption key={airport.code} airport={airport} />
-                  ))}
-                </TooltipProvider>
+                {airports.map((airport) => (
+                  <SelectItem key={airport.code} value={airport.code}>
+                    {airport.city} - {airport.code}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -124,11 +99,11 @@ const AirportSelector = ({
                 <SelectValue placeholder="Select destination airport" />
               </SelectTrigger>
               <SelectContent>
-                <TooltipProvider>
-                  {airports.map((airport) => (
-                    <AirportOption key={airport.code} airport={airport} />
-                  ))}
-                </TooltipProvider>
+                {airports.map((airport) => (
+                  <SelectItem key={airport.code} value={airport.code}>
+                    {airport.city} - {airport.code}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

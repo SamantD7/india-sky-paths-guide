@@ -88,14 +88,16 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
     }
   }, [map, route]);
 
+  // Always show loading state first, regardless of error
+  if (!isLoaded) {
+    return <Skeleton className="w-full h-full" />;
+  }
+
+  // Only show error after loading if there's an actual API error
   if (loadError) {
     return <div className="flex items-center justify-center h-full bg-gray-100 p-4">
       <p className="text-red-500">Map cannot be loaded. Please check your API key.</p>
     </div>;
-  }
-
-  if (!isLoaded) {
-    return <Skeleton className="w-full h-full" />;
   }
 
   return (

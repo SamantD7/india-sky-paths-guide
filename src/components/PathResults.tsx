@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Route } from "@/types/aviation";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Map } from "lucide-react";

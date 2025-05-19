@@ -27,7 +27,7 @@ const Index = () => {
     setCalculatedRoute(null);
     
     try {
-      // Direct function call to our client-side implementation
+      // Direct function call instead of API request
       const route = await calculatePath(
         sourceAirport.code,
         destinationAirport.code,

@@ -3,6 +3,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { Airport, Route } from "@/types/aviation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getMapApiKey, hasMapApiKey } from "@/utils/mapUtils";
+import MapApiKeyForm from './MapApiKeyForm';
 
 const INDIA_CENTER = { lat: 20.5937, lng: 78.9629 };
 const DEFAULT_ZOOM = 5;
@@ -19,8 +21,9 @@ const mapContainerStyle = {
 };
 
 const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: GoogleMapComponentProps) => {
-  // Get the API key from localStorage to avoid hardcoded keys
-  const apiKey = localStorage.getItem('map_api_key') || '';
+  // Get the API key from localStorage
+  const [apiKey, setApiKey] = useState(getMapApiKey());
+  const [needsApiKey, setNeedsApiKey] = useState(!hasMapApiKey());
   const [mapReady, setMapReady] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
@@ -31,6 +34,11 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
     // Important to prevent multiple instances loading
     id: 'google-map-script',
   });
+
+  // Update API key if changed
+  useEffect(() => {
+    setApiKey(getMapApiKey());
+  }, [needsApiKey]);
 
   // Create a path from the route path
   const getPathCoordinates = () => {
@@ -94,6 +102,16 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
     }
   }, [map, route]);
 
+  const handleApiKeySubmitted = () => {
+    setNeedsApiKey(false);
+    setApiKey(getMapApiKey());
+  };
+
+  // If we need API key, show the form
+  if (needsApiKey) {
+    return <MapApiKeyForm onKeySet={handleApiKeySubmitted} />;
+  }
+
   // Always show loading state first, regardless of error
   if (!isLoaded) {
     return <Skeleton className="w-full h-full" />;
@@ -101,9 +119,12 @@ const GoogleMapComponent = ({ sourceAirport, destinationAirport, route }: Google
 
   // Only show error after loading if there's an actual API error
   if (loadError) {
-    return <div className="flex items-center justify-center h-full bg-gray-100 p-4">
-      <p className="text-red-500">Map cannot be loaded. Please check your API key.</p>
-    </div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-full bg-gray-100 p-4 gap-4">
+        <p className="text-red-500">Map cannot be loaded. Please check your API key.</p>
+        <Button onClick={() => setNeedsApiKey(true)}>Update API Key</Button>
+      </div>
+    );
   }
 
   return (

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Airport, Route } from "@/types/aviation";
 import { toast } from "@/components/ui/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { calculatePath } from "@/api/aviation";
 
 const Index = () => {
   const [sourceAirport, setSourceAirport] = useState<Airport | null>(null);
@@ -18,7 +19,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const calculatePath = async () => {
+  const calculateRouteHandler = async () => {
     if (!sourceAirport || !destinationAirport) return;
     
     setIsLoading(true);
@@ -26,26 +27,14 @@ const Index = () => {
     setCalculatedRoute(null);
     
     try {
-      // Using our mock API for now, but prepared for real axios calls in future
-      const response = await fetch('/api/calculate-path', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          source: sourceAirport.code,
-          destination: destinationAirport.code,
-          algorithm: algorithm
-        }),
-      });
+      // Direct function call instead of API request
+      const route = await calculatePath(
+        sourceAirport.code,
+        destinationAirport.code,
+        algorithm
+      );
       
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to calculate path');
-      }
-      
-      setCalculatedRoute(data);
+      setCalculatedRoute(route);
       toast({
         title: "Route calculated",
         description: `Found optimal route from ${sourceAirport.code} to ${destinationAirport.code} using ${getAlgorithmName(algorithm)}`,
@@ -86,7 +75,7 @@ const Index = () => {
             onSourceChange={setSourceAirport}
             onDestinationChange={setDestination}
             onAlgorithmChange={setAlgorithm}
-            onCalculate={calculatePath}
+            onCalculate={calculateRouteHandler}
             isLoading={isLoading}
           />
           

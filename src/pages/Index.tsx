@@ -6,19 +6,20 @@ import PathResults from "@/components/PathResults";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
+import { Airport, Route } from "@/types/aviation";
 import { toast } from "@/components/ui/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { calculatePath } from "@/api/aviation";
-import { calculateFlightCost } from "@/utils/costCalculator";
+import { FlightClass, calculateFlightCost } from "@/utils/costCalculator";
 
 const Index = () => {
-  const [sourceAirport, setSourceAirport] = useState(null);
-  const [destinationAirport, setDestination] = useState(null);
-  const [algorithm, setAlgorithm] = useState("dijkstra");
-  const [flightClass, setFlightClass] = useState("economy");
-  const [calculatedRoute, setCalculatedRoute] = useState(null);
+  const [sourceAirport, setSourceAirport] = useState<Airport | null>(null);
+  const [destinationAirport, setDestination] = useState<Airport | null>(null);
+  const [algorithm, setAlgorithm] = useState<string>("dijkstra");
+  const [flightClass, setFlightClass] = useState<FlightClass>("economy");
+  const [calculatedRoute, setCalculatedRoute] = useState<Route | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   
   const calculateRouteHandler = async () => {
     if (!sourceAirport || !destinationAirport) return;
@@ -37,7 +38,7 @@ const Index = () => {
       
       // Add flight class and cost information
       const estimatedCost = calculateFlightCost(route.distance, flightClass);
-      const routeWithCost = {
+      const routeWithCost: Route = {
         ...route,
         flightClass,
         estimatedCost
@@ -50,10 +51,10 @@ const Index = () => {
       });
     } catch (error) {
       console.error('Error calculating path:', error);
-      setError(error.message || "Failed to calculate the route");
+      setError((error as Error).message || "Failed to calculate the route");
       toast({
         title: "Error",
-        description: error.message || "Failed to calculate the route. Please try again.",
+        description: (error as Error).message || "Failed to calculate the route. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -61,7 +62,7 @@ const Index = () => {
     }
   };
 
-  const getAlgorithmName = (algorithm) => {
+  const getAlgorithmName = (algorithm: string): string => {
     switch (algorithm) {
       case 'astar':
         return 'A* Search';

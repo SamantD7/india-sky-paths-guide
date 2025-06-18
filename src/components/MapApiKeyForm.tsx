@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 
-const MapApiKeyForm = ({ onKeySet }) => {
+interface MapApiKeyFormProps {
+  onKeySet: () => void;
+}
+
+const MapApiKeyForm = ({ onKeySet }: MapApiKeyFormProps) => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
@@ -16,7 +20,7 @@ const MapApiKeyForm = ({ onKeySet }) => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Use a demo key if the user didn't enter anything

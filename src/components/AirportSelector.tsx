@@ -203,8 +203,8 @@ const AirportSelector = ({
                 <SelectValue placeholder="Select flight class" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="economy">Economy</SelectItem>
-                <SelectItem value="business">Business</SelectItem>
+                <SelectItem value="economy">Economy (₹3/km)</SelectItem>
+                <SelectItem value="business">Business (₹7/km)</SelectItem>
               </SelectContent>
             </Select>
           </div>

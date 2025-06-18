@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Airport } from "@/types/aviation";
 import { useEffect, useState } from "react";
 import { getAirports } from "@/api/aviation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,22 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FlightClass } from "@/utils/costCalculator";
 
-interface AirportSelectorProps {
-  sourceAirport: Airport | null;
-  destinationAirport: Airport | null;
-  algorithm: string;
-  flightClass: FlightClass;
-  onSourceChange: (airport: Airport | null) => void;
-  onDestinationChange: (airport: Airport | null) => void;
-  onAlgorithmChange: (algorithm: string) => void;
-  onFlightClassChange: (flightClass: FlightClass) => void;
-  onCalculate: () => void;
-  isLoading: boolean;
-}
-
-const algorithmExplanations: Record<string, string> = {
+const algorithmExplanations = {
   dijkstra: "Finds the shortest path from a starting node to all other nodes in a weighted graph.",
   astar: "An informed search algorithm that uses heuristics to find the shortest path faster.",
   "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph.",
@@ -45,8 +30,8 @@ const AirportSelector = ({
   onFlightClassChange,
   onCalculate,
   isLoading
-}: AirportSelectorProps) => {
-  const [airports, setAirports] = useState<Airport[]>([]);
+}) => {
+  const [airports, setAirports] = useState([]);
   const [isLoadingAirports, setIsLoadingAirports] = useState(true);
   const [showSourceInfo, setShowSourceInfo] = useState(false);
   const [showDestInfo, setShowDestInfo] = useState(false);
@@ -67,7 +52,7 @@ const AirportSelector = ({
     fetchAirports();
   }, []);
 
-  const renderAirportTooltip = (airport: Airport | null) => {
+  const renderAirportTooltip = (airport) => {
     if (!airport) return null;
     
     return (
@@ -197,7 +182,7 @@ const AirportSelector = ({
             </label>
             <Select 
               value={flightClass} 
-              onValueChange={(value: FlightClass) => onFlightClassChange(value)}
+              onValueChange={(value) => onFlightClassChange(value)}
             >
               <SelectTrigger id="flightClass">
                 <SelectValue placeholder="Select flight class" />

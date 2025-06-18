@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface SidebarProps {
-  children: React.ReactNode;
-}
-
-export const Sidebar = ({ children }: SidebarProps) => {
+export const Sidebar = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (

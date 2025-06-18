@@ -1,15 +1,10 @@
 
 import React from 'react';
-import { Route } from "@/types/aviation";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Map, Timer, CreditCard } from "lucide-react";
 import { formatCurrency, getFlightClassDisplayName } from "@/utils/costCalculator";
 
-interface PathResultsProps {
-  route: Route;
-}
-
-const getAlgorithmDisplayName = (algorithm: string): string => {
+const getAlgorithmDisplayName = (algorithm) => {
   switch (algorithm) {
     case 'astar':
       return 'A* Search Algorithm';
@@ -23,7 +18,7 @@ const getAlgorithmDisplayName = (algorithm: string): string => {
   }
 };
 
-const PathResults = ({ route }: PathResultsProps) => {
+const PathResults = ({ route }) => {
   const algorithmName = getAlgorithmDisplayName(route.algorithm);
   
   return (

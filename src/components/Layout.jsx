@@ -2,12 +2,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 
-interface LayoutProps {
-  children: React.ReactNode;
-  sidebar: React.ReactNode;
-}
-
-const Layout = ({ children, sidebar }: LayoutProps) => {
+const Layout = ({ children, sidebar }) => {
   return (
     <div className="h-screen flex flex-col">
       <header className="bg-primary text-primary-foreground p-4 shadow-md">

@@ -12,14 +12,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { FlightClass } from "@/utils/costCalculator";
 
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
   destinationAirport: Airport | null;
   algorithm: string;
+  flightClass: FlightClass;
   onSourceChange: (airport: Airport | null) => void;
   onDestinationChange: (airport: Airport | null) => void;
   onAlgorithmChange: (algorithm: string) => void;
+  onFlightClassChange: (flightClass: FlightClass) => void;
   onCalculate: () => void;
   isLoading: boolean;
 }
@@ -35,9 +38,11 @@ const AirportSelector = ({
   sourceAirport,
   destinationAirport,
   algorithm,
+  flightClass,
   onSourceChange,
   onDestinationChange,
   onAlgorithmChange,
+  onFlightClassChange,
   onCalculate,
   isLoading
 }: AirportSelectorProps) => {
@@ -184,6 +189,24 @@ const AirportSelector = ({
                 </CardContent>
               </Card>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="flightClass" className="text-sm font-medium">
+              Flight Class
+            </label>
+            <Select 
+              value={flightClass} 
+              onValueChange={(value: FlightClass) => onFlightClassChange(value)}
+            >
+              <SelectTrigger id="flightClass">
+                <SelectValue placeholder="Select flight class" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="economy">Economy (₹3/km)</SelectItem>
+                <SelectItem value="business">Business (₹7/km)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

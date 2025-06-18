@@ -16,6 +16,8 @@ export interface Route {
   distance: number;
   duration: number;
   computationTime?: number; // Add computation time in milliseconds
+  flightClass?: 'economy' | 'business';
+  estimatedCost?: number;
 }
 
 export interface FlightData {

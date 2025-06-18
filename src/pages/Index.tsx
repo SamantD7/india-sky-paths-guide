@@ -10,11 +10,13 @@ import { Airport, Route } from "@/types/aviation";
 import { toast } from "@/components/ui/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { calculatePath } from "@/api/aviation";
+import { FlightClass, calculateFlightCost } from "@/utils/costCalculator";
 
 const Index = () => {
   const [sourceAirport, setSourceAirport] = useState<Airport | null>(null);
   const [destinationAirport, setDestination] = useState<Airport | null>(null);
   const [algorithm, setAlgorithm] = useState<string>("dijkstra");
+  const [flightClass, setFlightClass] = useState<FlightClass>("economy");
   const [calculatedRoute, setCalculatedRoute] = useState<Route | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,15 @@ const Index = () => {
         algorithm
       );
       
-      setCalculatedRoute(route);
+      // Add flight class and cost information
+      const estimatedCost = calculateFlightCost(route.distance, flightClass);
+      const routeWithCost: Route = {
+        ...route,
+        flightClass,
+        estimatedCost
+      };
+      
+      setCalculatedRoute(routeWithCost);
       toast({
         title: "Route calculated",
         description: `Found optimal route from ${sourceAirport.code} to ${destinationAirport.code} using ${getAlgorithmName(algorithm)}`,
@@ -74,9 +84,11 @@ const Index = () => {
             sourceAirport={sourceAirport}
             destinationAirport={destinationAirport}
             algorithm={algorithm}
+            flightClass={flightClass}
             onSourceChange={setSourceAirport}
             onDestinationChange={setDestination}
             onAlgorithmChange={setAlgorithm}
+            onFlightClassChange={setFlightClass}
             onCalculate={calculateRouteHandler}
             isLoading={isLoading}
           />

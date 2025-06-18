@@ -2,7 +2,8 @@
 import React from 'react';
 import { Route } from "@/types/aviation";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Map, Timer } from "lucide-react";
+import { Clock, Map, Timer, CreditCard } from "lucide-react";
+import { formatCurrency, getFlightClassDisplayName } from "@/utils/costCalculator";
 
 interface PathResultsProps {
   route: Route;
@@ -43,6 +44,14 @@ const PathResults = ({ route }: PathResultsProps) => {
           <Clock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm">Duration: <strong>{route.duration.toFixed(2)} min</strong></span>
         </div>
+        {route.estimatedCost !== undefined && route.flightClass && (
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm">
+              Estimated Cost ({getFlightClassDisplayName(route.flightClass)}): <strong>{formatCurrency(route.estimatedCost)}</strong>
+            </span>
+          </div>
+        )}
         {route.computationTime !== undefined && (
           <div className="flex items-center gap-2">
             <Timer className="h-4 w-4 text-muted-foreground" />

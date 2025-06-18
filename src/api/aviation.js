@@ -173,9 +173,7 @@ const aStar = (graph, start, end) => {
   const endAirport = airports.find(a => a.code === end);
   
   const heuristic = (nodeCode) => {
-    const node = airports.find(a => a.code ===
-
-);
+    const node = airports.find(a => a.code === nodeCode);
     return calculateDistance(
       node.position.lat, node.position.lng,
       endAirport.position.lat, endAirport.position.lng

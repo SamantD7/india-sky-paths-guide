@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Airport } from "@/types/aviation";
@@ -13,13 +12,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { FLIGHT_CLASSES, getFlightClassName } from "@/utils/costCalculator";
+
 interface AirportSelectorProps {
   sourceAirport: Airport | null;
   destinationAirport: Airport | null;
   algorithm: string;
+  flightClass: string;
   onSourceChange: (airport: Airport | null) => void;
   onDestinationChange: (airport: Airport | null) => void;
   onAlgorithmChange: (algorithm: string) => void;
+  onFlightClassChange: (flightClass: string) => void;
   onCalculate: () => void;
   isLoading: boolean;
 }
@@ -27,16 +30,19 @@ interface AirportSelectorProps {
 const algorithmExplanations: Record<string, string> = {
   dijkstra: "Finds the shortest path from a starting node to all other nodes in a weighted graph.",
   astar: "An informed search algorithm that uses heuristics to find the shortest path faster.",
-  "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph."
+  "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph.",
+  "bellman-ford": "Computes shortest paths and can handle negative edge weights, useful for cost optimization."
 };
 
 const AirportSelector = ({
   sourceAirport,
   destinationAirport,
   algorithm,
+  flightClass,
   onSourceChange,
   onDestinationChange,
   onAlgorithmChange,
+  onFlightClassChange,
   onCalculate,
   isLoading
 }: AirportSelectorProps) => {
@@ -171,6 +177,7 @@ const AirportSelector = ({
                 <SelectItem value="dijkstra">Dijkstra</SelectItem>
                 <SelectItem value="astar">A*</SelectItem>
                 <SelectItem value="floyd-warshall">Floyd-Warshall</SelectItem>
+                <SelectItem value="bellman-ford">Bellman-Ford</SelectItem>
               </SelectContent>
             </Select>
             
@@ -182,6 +189,28 @@ const AirportSelector = ({
                 </CardContent>
               </Card>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="flightClass" className="text-sm font-medium">
+              Flight Class
+            </label>
+            <Select 
+              value={flightClass} 
+              onValueChange={(value) => onFlightClassChange(value)}
+            >
+              <SelectTrigger id="flightClass">
+                <SelectValue placeholder="Select flight class" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={FLIGHT_CLASSES.ECONOMY}>
+                  {getFlightClassName(FLIGHT_CLASSES.ECONOMY)}
+                </SelectItem>
+                <SelectItem value={FLIGHT_CLASSES.BUSINESS}>
+                  {getFlightClassName(FLIGHT_CLASSES.BUSINESS)}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

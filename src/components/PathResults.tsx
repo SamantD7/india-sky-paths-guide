@@ -14,6 +14,8 @@ const getAlgorithmDisplayName = (algorithm: string): string => {
       return 'A* Search Algorithm';
     case 'floyd-warshall':
       return 'Floyd-Warshall Algorithm';
+    case 'bellman-ford':
+      return 'Bellman-Ford Algorithm';
     case 'dijkstra':
     default:
       return 'Dijkstra Algorithm';

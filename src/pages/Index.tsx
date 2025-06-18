@@ -58,6 +58,8 @@ const Index = () => {
         return 'A* Search';
       case 'floyd-warshall':
         return 'Floyd-Warshall';
+      case 'bellman-ford':
+        return 'Bellman-Ford';
       case 'dijkstra':
       default:
         return 'Dijkstra';

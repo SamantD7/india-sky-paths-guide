@@ -27,7 +27,8 @@ interface AirportSelectorProps {
 const algorithmExplanations: Record<string, string> = {
   dijkstra: "Finds the shortest path from a starting node to all other nodes in a weighted graph.",
   astar: "An informed search algorithm that uses heuristics to find the shortest path faster.",
-  "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph."
+  "floyd-warshall": "Calculates shortest paths between all pairs of nodes in a graph.",
+  "bellman-ford": "Detects negative-weight cycles and finds shortest paths, works with negative edge weights."
 };
 
 const AirportSelector = ({
@@ -171,6 +172,7 @@ const AirportSelector = ({
                 <SelectItem value="dijkstra">Dijkstra</SelectItem>
                 <SelectItem value="astar">A*</SelectItem>
                 <SelectItem value="floyd-warshall">Floyd-Warshall</SelectItem>
+                <SelectItem value="bellman-ford">Bellman-Ford</SelectItem>
               </SelectContent>
             </Select>
             

@@ -106,6 +106,9 @@ export function calculatePath(source: string, destination: string, algorithm: st
     case "floyd-warshall":
       ({ path, distance, duration } = floydWarshall(graph, source, destination));
       break;
+    case "bellman-ford":
+      ({ path, distance, duration } = bellmanFord(graph, source, destination));
+      break;
     case "dijkstra":
     default:
       ({ path, distance, duration } = dijkstra(graph, source, destination));
@@ -365,6 +368,80 @@ function floydWarshall(graph: Record<string, Record<string, { distance: number; 
     path,
     distance: dist[source][destination],
     duration: durations[source][destination]
+  };
+}
+
+// Bellman-Ford algorithm implementation
+function bellmanFord(graph: Record<string, Record<string, { distance: number; duration: number }>>,
+                    source: string,
+                    destination: string) {
+  const nodes = Object.keys(graph);
+  const distances: Record<string, number> = {};
+  const durations: Record<string, number> = {};
+  const previous: Record<string, string | null> = {};
+
+  // Initialize distances
+  nodes.forEach(node => {
+    distances[node] = node === source ? 0 : Infinity;
+    durations[node] = node === source ? 0 : Infinity;
+    previous[node] = null;
+  });
+
+  // Relax edges repeatedly
+  for (let i = 0; i < nodes.length - 1; i++) {
+    nodes.forEach(u => {
+      if (distances[u] !== Infinity) {
+        Object.keys(graph[u]).forEach(v => {
+          const edge = graph[u][v];
+          const newDistance = distances[u] + edge.distance;
+          const newDuration = durations[u] + edge.duration;
+          
+          if (newDistance < distances[v]) {
+            distances[v] = newDistance;
+            durations[v] = newDuration;
+            previous[v] = u;
+          }
+        });
+      }
+    });
+  }
+
+  // Check for negative cycles (optional for this use case since flight distances are positive)
+  let hasNegativeCycle = false;
+  nodes.forEach(u => {
+    if (distances[u] !== Infinity) {
+      Object.keys(graph[u]).forEach(v => {
+        const edge = graph[u][v];
+        if (distances[u] + edge.distance < distances[v]) {
+          hasNegativeCycle = true;
+        }
+      });
+    }
+  });
+
+  if (hasNegativeCycle) {
+    console.warn("Negative cycle detected in graph");
+  }
+
+  // Reconstruct path
+  const path: string[] = [];
+  let current = destination;
+  
+  while (current && distances[current] !== Infinity) {
+    path.unshift(current);
+    current = previous[current] || "";
+    if (!current) break;
+  }
+  
+  // Verify path is valid
+  if (path.length === 0 || path[0] !== source) {
+    return { path: [], distance: 0, duration: 0 };
+  }
+  
+  return {
+    path,
+    distance: distances[destination] === Infinity ? 0 : distances[destination],
+    duration: durations[destination] === Infinity ? 0 : durations[destination]
   };
 }
 

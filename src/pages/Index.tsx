@@ -1,3 +1,4 @@
+
 import AirportSelector from "@/components/AirportSelector";
 import FlightMap from "@/components/FlightMap";
 import Layout from "@/components/Layout";
@@ -9,13 +10,11 @@ import { Airport, Route } from "@/types/aviation";
 import { toast } from "@/components/ui/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { calculatePath } from "@/api/aviation";
-import { FLIGHT_CLASSES } from "@/utils/costCalculator";
 
 const Index = () => {
   const [sourceAirport, setSourceAirport] = useState<Airport | null>(null);
   const [destinationAirport, setDestination] = useState<Airport | null>(null);
   const [algorithm, setAlgorithm] = useState<string>("dijkstra");
-  const [flightClass, setFlightClass] = useState<string>(FLIGHT_CLASSES.ECONOMY);
   const [calculatedRoute, setCalculatedRoute] = useState<Route | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,8 +58,6 @@ const Index = () => {
         return 'A* Search';
       case 'floyd-warshall':
         return 'Floyd-Warshall';
-      case 'bellman-ford':
-        return 'Bellman-Ford';
       case 'dijkstra':
       default:
         return 'Dijkstra';
@@ -75,11 +72,9 @@ const Index = () => {
             sourceAirport={sourceAirport}
             destinationAirport={destinationAirport}
             algorithm={algorithm}
-            flightClass={flightClass}
             onSourceChange={setSourceAirport}
             onDestinationChange={setDestination}
             onAlgorithmChange={setAlgorithm}
-            onFlightClassChange={setFlightClass}
             onCalculate={calculateRouteHandler}
             isLoading={isLoading}
           />
@@ -107,7 +102,7 @@ const Index = () => {
                 <CardTitle className="text-base">Route Results</CardTitle>
               </CardHeader>
               <CardContent>
-                <PathResults route={calculatedRoute} flightClass={flightClass} />
+                <PathResults route={calculatedRoute} />
               </CardContent>
             </Card>
           )}

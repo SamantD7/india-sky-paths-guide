@@ -1,12 +1,11 @@
+
 import React from 'react';
 import { Route } from "@/types/aviation";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Map, Timer } from "lucide-react";
-import { calculateFlightCost, formatCurrency, getFlightClassName } from "@/utils/costCalculator";
 
 interface PathResultsProps {
   route: Route;
-  flightClass: string;
 }
 
 const getAlgorithmDisplayName = (algorithm: string): string => {
@@ -15,17 +14,14 @@ const getAlgorithmDisplayName = (algorithm: string): string => {
       return 'A* Search Algorithm';
     case 'floyd-warshall':
       return 'Floyd-Warshall Algorithm';
-    case 'bellman-ford':
-      return 'Bellman-Ford Algorithm';
     case 'dijkstra':
     default:
       return 'Dijkstra Algorithm';
   }
 };
 
-const PathResults = ({ route, flightClass }: PathResultsProps) => {
+const PathResults = ({ route }: PathResultsProps) => {
   const algorithmName = getAlgorithmDisplayName(route.algorithm);
-  const flightCost = calculateFlightCost(route.distance, flightClass);
   
   return (
     <div className="space-y-4">
@@ -44,12 +40,6 @@ const PathResults = ({ route, flightClass }: PathResultsProps) => {
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm">Duration: <strong>{route.duration.toFixed(2)} min</strong></span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="text-xs">
-            {getFlightClassName(flightClass)}
-          </Badge>
-          <span className="text-sm">Cost: <strong>{formatCurrency(flightCost)}</strong></span>
         </div>
         {route.computationTime !== undefined && (
           <div className="flex items-center gap-2">

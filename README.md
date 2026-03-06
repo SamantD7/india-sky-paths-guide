@@ -1,31 +1,42 @@
-# India Sky Paths Guide
+# Graph Algorithms for Flight Path Optimization
 
-Welcome to the India Sky Paths Guide repository! This project aims to provide an extensive overview of sky paths across various locations in India, serving enthusiasts, astronomers, and travelers alike.
+## Bellman-Ford Algorithm
+The Bellman-Ford algorithm computes shortest paths from a single source vertex to all other vertices in a weighted graph. It is capable of handling graphs with negative edges but no negative cycles.
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+### Steps:
+1. Initialize distances from the source to all vertices as infinite, except the source itself, which is set to 0.
+2. Relax all edges |V| - 1 times, where |V| is the number of vertices.
+3. Check for negative-weight cycles.
 
-## Introduction
-This project offers detailed information about observable star patterns, celestial events, and sky mapping techniques. It is designed to help users optimize their sky-gazing experience.
+### Use Case:
+Efficient for cases where edges can have negative weights, such as flight paths with varying costs.
 
-## Installation
-To get started with this guide, clone the repository:
-```bash
-git clone https://github.com/SamantD7/india-sky-paths-guide.git
-```
+## Dijkstra's Algorithm
+Dijkstra's algorithm finds the shortest path between nodes in a graph, which may represent, for example, road networks. It is efficient for graphs with non-negative edge weights.
 
-## Usage
-Instructions on how to use this guide will be added here. Please check back later for more information.
+### Steps:
+1. Set the initial node's distance to zero and all others to infinity.
+2. Mark all nodes as unvisited. Set the initial node as current.
+3. For the current node, consider all of its unvisited neighbors and calculate their tentative distances.
+4. When done considering all neighbors, mark the current node as visited. A visited node will not be checked again.
+5. If the destination node has been marked visited or if the smallest tentative distance among the unvisited nodes is infinity, the algorithm is complete.
 
-## Contributing
-We welcome contributions! If you'd like to contribute, please fork the repository and submit a pull request.
+### Use Case:
+Effective for finding the shortest route in roadmaps or air traffic routes where weights are positive.
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## A* Search Algorithm
+The A* algorithm is a pathfinding and graph traversal algorithm that is widely used in computer science. It finds paths to the target node with the shortest weights while considering both the cost to reach that node and an estimated cost to reach the destination.
 
-### Contact
-For any inquiries or suggestions, please reach out to [SamantD7](https://github.com/SamantD7).
+### Steps:
+1. Initialize open and closed lists.
+2. Add the starting node to the open list.
+3. While the open list is not empty:
+   - Find the node with the lowest f cost.
+   - If it is the target node, reconstruct the path and return it.
+   - Move this node from open to closed.
+   - For each neighbor of the node:
+       - If it is not walkable or in the closed list, ignore it.
+       - If it is not in the open list, add it and calculate its costs.
+
+### Use Case:
+Used in scenarios where optimal pathfinding is required considering various factors like terrain, weather, etc.

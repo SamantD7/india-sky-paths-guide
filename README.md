@@ -10,9 +10,18 @@ The India Sky Paths Guide is a comprehensive resource that assists users in unde
 - **Educational Resources**: Access a library of articles, images, and videos related to astronomy and celestial navigation.
 
 ## Algorithms Used
-- **Geospatial Calculations**: Algorithms to compute celestial positions based on input location and time.
-- **Data Interpolation**: Techniques to provide smooth transitions between star positions across different times.
-- **User Input Parsing**: Handling various formats of user inputs for locations and times.
+Dijkstra's Algorithm
+Time Complexity: O((V + E) log V)
+Use Case: Finding shortest paths in graphs with non-negative weights
+Application: Optimal flight routes with distance-based costs
+Bellman-Ford Algorithm
+Time Complexity: O(V × E)
+Use Case: Handling negative edge weights and detecting negative cycles
+Application: Complex routing scenarios with variable cost factors
+A* Search Algorithm
+Time Complexity: O(E) with good heuristics
+Use Case: Fastest pathfinding with domain knowledge
+Application: Real-time route suggestions with geographic heuristics
 
 ## Setup Instructions
 1. **Clone the repository**:  
